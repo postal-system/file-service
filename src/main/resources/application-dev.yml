@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://130.193.56.118:5436/files
+    username: postgres
+    password: mcpmwC8gGwVKr4Q9xCKZEzEgS
+  liquibase:
+    change-log: classpath:db\changelog\db.changelog-master.yaml
+  servlet:
+    multipart:
+      max-file-size: 1280KB
+      max-request-size: 1280KB
+      enabled: true
+app:
+  document-root: src/main/resources/temp
+server:
+  port: 8085
