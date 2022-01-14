@@ -1,0 +1,13 @@
+[Unit]
+Description=Managed Java service
+
+[Service]
+WorkingDirectory=/opt/apps/WORKFOLDER/
+ExecStart=/bin/java -jar -D spring.profiles.active=dev -Xmx256m /opt/apps/WORKFOLDER/application.jar
+User=root
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

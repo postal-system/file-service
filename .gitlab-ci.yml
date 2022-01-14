@@ -1,0 +1,44 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: maven:3.6-jdk-11
+  artifacts:
+    paths:
+      - ./target/
+    expire_in: 1 day
+  script:
+    - mvn clean package
+  when: manual
+  allow_failure: false
+
+deploy:
+  image: debian:10
+  stage: deploy
+  needs: [ build ]
+  variables:
+    DEPLOY_WEB_HOST: "130.193.56.118"
+    DEPLOY_FOLDER: "/opt/apps/${CI_PROJECT_NAME}"
+    DEPLOY_USER: centos
+  before_script:
+    - echo ${CI_JOB_TIMESTAMP}
+    - apt-get update -y
+    - apt-get -y install rsync openssh-client
+    - mkdir "${HOME}/.ssh"
+    - echo "${DEPLOY_KEY_TRAINEESHIP}" > ${HOME}/.ssh/id_rsa
+    - chmod 700 ${HOME}/.ssh/id_rsa
+    - ssh-keyscan -H ${DEPLOY_WEB_HOST} >> ${HOME}/.ssh/known_hosts
+  script:
+    - sed -i "s/WORKFOLDER/${CI_PROJECT_NAME}/g" ./ops-tools/template.service &&
+      cp ./ops-tools/template.service ./ops-tools/${CI_PROJECT_NAME}.service
+    - rsync -arv ./ops-tools/${CI_PROJECT_NAME}.service centos@${DEPLOY_WEB_HOST}:/home/centos
+    - ssh -o StrictHostKeyChecking=no centos@${DEPLOY_WEB_HOST} -i ~/.ssh/id_rsa
+      "sudo mkdir -p ${DEPLOY_FOLDER} && sudo chmod -R 777 ${DEPLOY_FOLDER} &&
+      sudo mv /home/centos/${CI_PROJECT_NAME}.service /etc/systemd/system/"
+    - rsync -arv ./target/application.jar centos@${DEPLOY_WEB_HOST}:${DEPLOY_FOLDER}
+    - ssh -o StrictHostKeyChecking=no centos@${DEPLOY_WEB_HOST} -i ~/.ssh/id_rsa
+      "sudo chmod -R 777 ${DEPLOY_FOLDER} && sudo systemctl daemon-reload && sudo systemctl enable ${CI_PROJECT_NAME}.service
+      && sudo systemctl restart ${CI_PROJECT_NAME}.service"
+

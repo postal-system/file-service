@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  postgresql:
+    restart: always
+    image: postgres
+    container_name: files_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mcpmwC8gGwVKr4Q9xCKZEzEgS
+      - POSTGRES_DB=files
+    ports:
+      - "5436:5432"
+
+  file_storage_service_app:
+    image: 'application:latest'
+    build:
+      context: .
+    container_name: file_storage_service_app
+    ports:
+      - 8085:8085

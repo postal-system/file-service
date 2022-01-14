@@ -1,0 +1,4 @@
+app:
+  document-root: src/test/resources/temp
+  filename: sampleFile.txt
+  url: /files
