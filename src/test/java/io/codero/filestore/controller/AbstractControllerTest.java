@@ -10,10 +10,12 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.io.IOException;
+
 @SpringBootTest
+@DirtiesContext
 @Testcontainers
 @AutoConfigureMockMvc
-@DirtiesContext
 public abstract class AbstractControllerTest {
     @Container
     private static final PostgreSQLContainer container = new PostgreSQLContainer("postgres:14.1")
