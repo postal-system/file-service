@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://130.193.56.118:5436/files
+    url: jdbc:postgresql://130.193.56.118:5432/pejt_files
     username: postgres
     password: mcpmwC8gGwVKr4Q9xCKZEzEgS
   liquibase:
@@ -14,3 +14,7 @@ app:
   document-root: src/main/resources/temp
 server:
   port: 8085
+interceptor:
+  kafka:
+    bootstrap: "130.193.56.118:9092"
+    topic: "url"

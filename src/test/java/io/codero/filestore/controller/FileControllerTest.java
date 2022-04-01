@@ -2,11 +2,13 @@ package io.codero.filestore.controller;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
@@ -19,12 +21,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.apache.maven.shared.utils.io.FileUtils.mkdir;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+@ActiveProfiles("test")
 class FileControllerTest extends AbstractControllerTest {
-    @Value("${app.url}")
-    private String url;
+
+    private static final String URL = "/api/files";
 
     @Autowired
     private MockMvc mvc;
@@ -45,8 +52,26 @@ class FileControllerTest extends AbstractControllerTest {
         });
     }
 
-    private final MockMultipartFile file1 = new MockMultipartFile("file", "file1.txt", MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes());
-    private final MockMultipartFile file2 = new MockMultipartFile("file", "file2.txt", MediaType.TEXT_PLAIN_VALUE, "Welcome!".getBytes());
+    @BeforeEach
+    void setUp() {
+        if (!Files.exists(Path.of(documentRoot))) {
+            mkdir(documentRoot);
+        }
+    }
+
+    private final MockMultipartFile file1 = new MockMultipartFile(
+            "file",
+            "file1.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "Hello, World!".getBytes()
+    );
+
+    private final MockMultipartFile file2 = new MockMultipartFile(
+            "file",
+            "file2.txt",
+            MediaType.TEXT_PLAIN_VALUE,
+            "Welcome!".getBytes()
+    );
 
     // Crud-------------
     @Test
@@ -55,7 +80,7 @@ class FileControllerTest extends AbstractControllerTest {
 
         Assertions.assertFalse(Files.exists(docRootPath));
 
-        mvc.perform(multipart(url).file(file1))
+        mvc.perform(multipart(URL).file(file1))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -69,11 +94,11 @@ class FileControllerTest extends AbstractControllerTest {
 
         Assertions.assertFalse(Files.exists(docRootPath));
 
-        mvc.perform(multipart(url).file(file1))
+        mvc.perform(multipart(URL).file(file1))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        mvc.perform(multipart(url).file(file1))
+        mvc.perform(multipart(URL).file(file1))
                 .andExpect(status().is(409))
                 .andReturn();
 
@@ -87,7 +112,7 @@ class FileControllerTest extends AbstractControllerTest {
         Path docRootPath = Path.of(documentRoot, file1.getOriginalFilename());
         Assertions.assertFalse(Files.exists(docRootPath));
 
-        MvcResult postResult = mvc.perform(multipart(url).file(file1))
+        MvcResult postResult = mvc.perform(multipart(URL).file(file1))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -95,7 +120,7 @@ class FileControllerTest extends AbstractControllerTest {
         String strUUID = strPostResult.substring(1, strPostResult.length() - 1);
         UUID id = UUID.fromString(strUUID);
 
-        MvcResult getResult = mvc.perform(get(url + "/" + id))
+        MvcResult getResult = mvc.perform(get(URL + "/" + id))
                 .andExpect(status().isOk())
                 .andDo(result -> result.getResponse().getContentAsString())
                 .andReturn();
@@ -111,7 +136,7 @@ class FileControllerTest extends AbstractControllerTest {
     @Test
     void shouldReturnExceptionIfFileNotExist() throws Exception {
         UUID id = UUID.randomUUID();
-        mvc.perform(get(url + id))
+        mvc.perform(get(URL + id))
                 .andExpect(status().isNotFound())
                 .andReturn();
     }
@@ -123,7 +148,7 @@ class FileControllerTest extends AbstractControllerTest {
         Path docRootPath2 = Path.of(documentRoot, file2.getOriginalFilename());
         Assertions.assertFalse(Files.exists(docRootPath));
 
-        MvcResult postResult = mvc.perform(multipart(url).file(file1))
+        MvcResult postResult = mvc.perform(multipart(URL).file(file1))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -131,7 +156,7 @@ class FileControllerTest extends AbstractControllerTest {
         String strUUID = strPostResult.substring(1, strPostResult.length() - 1);
         UUID id = UUID.fromString(strUUID);
 
-        MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart(url + "/" + id);
+        MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart(URL + "/" + id);
 
         builder.with(request -> {
             request.setMethod("PUT");
@@ -150,7 +175,7 @@ class FileControllerTest extends AbstractControllerTest {
     @Test
     void shouldReturnExceptionIfUpdatedFileNotExist() throws Exception {
         UUID id = UUID.randomUUID();
-        MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart(url + "/" + id);
+        MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart(URL + "/" + id);
 
         builder.with(request -> {
             request.setMethod("PUT");
@@ -168,7 +193,7 @@ class FileControllerTest extends AbstractControllerTest {
         Path docRootPath = Path.of(documentRoot, file1.getOriginalFilename());
         Assertions.assertFalse(Files.exists(docRootPath));
 
-        MvcResult postResult = mvc.perform(multipart(url).file(file1))
+        MvcResult postResult = mvc.perform(multipart(URL).file(file1))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -177,7 +202,7 @@ class FileControllerTest extends AbstractControllerTest {
         UUID id = UUID.fromString(strUUID);
 
         Assertions.assertTrue(Files.exists(docRootPath));
-        mvc.perform(delete(url + "/" + id))
+        mvc.perform(delete(URL + "/" + id))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -187,7 +212,8 @@ class FileControllerTest extends AbstractControllerTest {
     @Test
     void shouldReturnExceptionFileIfFileNotExist() throws Exception {
         UUID id = UUID.randomUUID();
-        mvc.perform(delete(url + "/" + id))
+
+        mvc.perform(delete(URL + "/" + id))
                 .andExpect(status().isNotFound())
                 .andReturn();
     }
@@ -197,7 +223,7 @@ class FileControllerTest extends AbstractControllerTest {
         Path docRootPath = Path.of(documentRoot, file1.getOriginalFilename());
         Path docRootPath2 = Path.of(documentRoot, file2.getOriginalFilename());
 
-        MvcResult postResult = mvc.perform(multipart(url).file(file1))
+        MvcResult postResult = mvc.perform(multipart(URL).file(file1))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -205,7 +231,7 @@ class FileControllerTest extends AbstractControllerTest {
         String strUUID = strPostResult.substring(1, strPostResult.length() - 1);
         UUID id = UUID.fromString(strUUID);
 
-        MvcResult getResult = mvc.perform(get(url + "/" + id))
+        MvcResult getResult = mvc.perform(get(URL + "/" + id))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -214,7 +240,7 @@ class FileControllerTest extends AbstractControllerTest {
         Assertions.assertEquals("Hello, World!", strGetResult);
         Assertions.assertTrue(Files.exists(docRootPath));
 
-        MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart(url + "/" + id);
+        MockMultipartHttpServletRequestBuilder builder = MockMvcRequestBuilders.multipart(URL + "/" + id);
 
         builder.with(request -> {
             request.setMethod("PUT");
@@ -227,7 +253,7 @@ class FileControllerTest extends AbstractControllerTest {
         Assertions.assertFalse(Files.exists(docRootPath));
         Assertions.assertTrue(Files.exists(docRootPath2));
 
-        mvc.perform(delete("/files" + "/" + id))
+        mvc.perform(delete(URL + "/" + id))
                 .andExpect(status().isOk())
                 .andReturn();
 

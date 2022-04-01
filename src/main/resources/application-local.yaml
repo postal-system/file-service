@@ -14,3 +14,7 @@ app:
   document-root: src/main/resources/temp
 server:
   port: 8085
+interceptor:
+  kafka:
+    bootstrap: "localhost:9092"
+    topic: "url"
