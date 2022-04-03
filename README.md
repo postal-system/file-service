@@ -3,9 +3,9 @@
 Сохраняет файлы на диск и хранит метрики в базе данных.
 ## Используемые технологии:
 
-- Maven,
+- Maven
 - Spring-boot: starter, web, jpa, test
-- Liquibase,
-- PostgreSQL,
+- Liquibase
+- PostgreSQL
 - Testcontainers
 - Checkstyle

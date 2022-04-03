@@ -19,7 +19,7 @@ deploy:
   stage: deploy
   needs: [ build ]
   variables:
-    DEPLOY_WEB_HOST: "130.193.56.118"
+    DEPLOY_WEB_HOST: "..."
     DEPLOY_FOLDER: "/opt/apps/${CI_PROJECT_NAME}"
     DEPLOY_USER: centos
   before_script:

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://130.193.56.118:5432/pejt_files
+    url: jdbc:postgresql://192.168.1.1:5432/pejt_files
     username: postgres
-    password: mcpmwC8gGwVKr4Q9xCKZEzEgS
+    password: 1234
   liquibase:
     change-log: classpath:db\changelog\db.changelog-master.yaml
   servlet:
@@ -16,5 +16,5 @@ server:
   port: 8085
 interceptor:
   kafka:
-    bootstrap: "130.193.56.118:9092"
+    bootstrap: "192.168.1.1:9092"
     topic: "url"
