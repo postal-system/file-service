@@ -7,7 +7,7 @@ services:
     container_name: files_db
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=mcpmwC8gGwVKr4Q9xCKZEzEgS
+      - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=files
     ports:
       - "5436:5432"
