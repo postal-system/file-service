@@ -18,7 +18,7 @@ import java.io.IOException;
 @AutoConfigureMockMvc
 public abstract class AbstractControllerTest {
     @Container
-    private static final PostgreSQLContainer container = new PostgreSQLContainer("postgres:14.1")
+    private static final PostgreSQLContainer container = new PostgreSQLContainer("postgres:latest")
             .withDatabaseName("test_container")
             .withUsername("test")
             .withPassword("test");
