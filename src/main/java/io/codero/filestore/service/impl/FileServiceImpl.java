@@ -1,6 +1,7 @@
 package io.codero.filestore.service.impl;
 
 import io.codero.filestore.exception.CastIOException;
+import io.codero.filestore.exception.ExceptionMessage;
 import io.codero.filestore.exception.FileAlreadyExistException;
 import io.codero.filestore.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class FileServiceImpl implements FileService {
                 log.info("File: {} was to save to disk", localName);
             }
         } catch (IOException ioException) {
-            generateMessage(ioException);
+            throw new CastIOException(ExceptionMessage.IOEXCEPTION.get());
         }
     }
 
@@ -45,9 +46,8 @@ public class FileServiceImpl implements FileService {
         try {
             return new InputStreamResource(new FileInputStream(fileDir + "/" + fileName));
         } catch (IOException ioException) {
-            generateMessage(ioException);
+            throw new CastIOException(ExceptionMessage.IOEXCEPTION.get());
         }
-        return null;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class FileServiceImpl implements FileService {
                 log.info("File: {} was replaced to new file", localName);
             }
         } catch (IOException ioException) {
-            generateMessage(ioException);
+            throw new CastIOException(ExceptionMessage.IOEXCEPTION.get());
         }
     }
 
@@ -71,18 +71,14 @@ public class FileServiceImpl implements FileService {
         try {
             Files.deleteIfExists(Path.of(fileDir, fileName));
         } catch (IOException ioException) {
-            generateMessage(ioException);
+            throw new CastIOException(ExceptionMessage.IOEXCEPTION.get());
         }
         log.info("File: {} was deleted from disk", fileName);
     }
 
     private void isFileExist(String fileName) {
         if (Files.exists(Path.of(fileDir, fileName))) {
-            throw new FileAlreadyExistException(String.format("The file with name: %s already exists", fileName));
+            throw new FileAlreadyExistException(String.format(ExceptionMessage.FILE_IS_EXIST.get(), fileName));
         }
-    }
-
-    private void generateMessage(IOException ioException) {
-        throw new CastIOException("It was throw IOException, file cannot be deleted");
     }
 }
