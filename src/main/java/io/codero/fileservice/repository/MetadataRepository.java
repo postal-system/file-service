@@ -1,8 +1,7 @@
-package io.codero.filestore.repository;
+package io.codero.fileservice.repository;
 
-import io.codero.filestore.entity.Metadata;
+import io.codero.fileservice.entity.Metadata;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 

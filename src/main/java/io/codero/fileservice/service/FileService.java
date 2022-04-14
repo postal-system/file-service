@@ -1,4 +1,4 @@
-package io.codero.filestore.service;
+package io.codero.fileservice.service;
 
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
