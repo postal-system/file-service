@@ -23,7 +23,7 @@ public class FileController {
 
     @PostMapping
     public UUID submit(@RequestBody final MultipartFile file) {
-        return service.saveFile(file);
+        return service.save(file);
     }
 
     @GetMapping("/{id}")

@@ -16,7 +16,7 @@ public class FileFacade {
     private final FileService fileService;
     private final MetadataService metadataService;
 
-    public synchronized UUID saveFile(MultipartFile multipartFile) {
+    public synchronized UUID save(MultipartFile multipartFile) {
         fileService.add(multipartFile);
         return metadataService.create(new Metadata(UUID.randomUUID(), multipartFile.getOriginalFilename()));
     }
