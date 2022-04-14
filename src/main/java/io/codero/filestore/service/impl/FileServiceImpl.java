@@ -78,14 +78,11 @@ public class FileServiceImpl implements FileService {
 
     private void isFileExist(String fileName) {
         if (Files.exists(Path.of(fileDir, fileName))) {
-            String message = String.format("The file with name: \"%s\" already exists", fileName);
-            log.error("{}", message);
-            throw new FileAlreadyExistException(message);
+            throw new FileAlreadyExistException(String.format("The file with name: %s already exists", fileName));
         }
     }
 
     private void generateMessage(IOException ioException) {
-        log.error("It was throw IOException, File cannot be deleted {}", ioException);
         throw new CastIOException("It was throw IOException, file cannot be deleted");
     }
 }
