@@ -12,10 +12,10 @@ services:
     ports:
       - "5436:5432"
 
-  file_storage_service_app:
+  file_service_app:
     image: 'application:latest'
     build:
       context: .
-    container_name: file_storage_service_app
+    container_name: file_service_app
     ports:
       - 8085:8085
