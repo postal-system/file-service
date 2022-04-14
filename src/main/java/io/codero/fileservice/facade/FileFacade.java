@@ -16,7 +16,7 @@ public class FileFacade {
     private final FileService fileService;
     private final MetadataService metadataService;
 
-    public UUID saveFile(MultipartFile multipartFile) {
+    public synchronized UUID saveFile(MultipartFile multipartFile) {
         fileService.add(multipartFile);
         return metadataService.create(new Metadata(UUID.randomUUID(), multipartFile.getOriginalFilename()));
     }
@@ -32,7 +32,7 @@ public class FileFacade {
         metadataService.deleteByID(uuid);
     }
 
-    public void update(MultipartFile file, UUID uuid) {
+    public synchronized void update(MultipartFile file, UUID uuid) {
         String oldName = metadataService.getNameById(uuid);
         fileService.update(file, oldName);
         metadataService.deleteByID(uuid);
