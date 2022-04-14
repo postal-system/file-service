@@ -30,8 +30,8 @@ public class FileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Resource> download(@PathVariable("id") UUID id) {
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM).body(service.getById(id));
+    public Resource download(@PathVariable("id") UUID id) {
+        return service.getById(id);
     }
 
     @DeleteMapping("/{id}")
