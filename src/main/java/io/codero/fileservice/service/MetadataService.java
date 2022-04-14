@@ -1,6 +1,6 @@
-package io.codero.filestore.service;
+package io.codero.fileservice.service;
 
-import io.codero.filestore.entity.Metadata;
+import io.codero.fileservice.entity.Metadata;
 
 import java.util.UUID;
 

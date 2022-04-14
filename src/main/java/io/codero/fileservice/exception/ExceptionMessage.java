@@ -1,4 +1,4 @@
-package io.codero.filestore.exception;
+package io.codero.fileservice.exception;
 
 public enum ExceptionMessage {
     IOEXCEPTION("It was throw IOException, file cannot be deleted"),

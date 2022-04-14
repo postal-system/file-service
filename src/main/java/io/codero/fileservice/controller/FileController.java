@@ -1,11 +1,8 @@
-package io.codero.filestore.controller;
+package io.codero.fileservice.controller;
 
-import io.codero.filestore.facade.FileStoreFacade;
+import io.codero.fileservice.facade.FileFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/api/files")
 public class FileController {
-    private final FileStoreFacade service;
+    private final FileFacade service;
 
     @PostMapping
     public UUID submit(@RequestBody final MultipartFile file) {

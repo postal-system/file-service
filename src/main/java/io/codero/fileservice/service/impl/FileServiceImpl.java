@@ -1,9 +1,9 @@
-package io.codero.filestore.service.impl;
+package io.codero.fileservice.service.impl;
 
-import io.codero.filestore.exception.CastIOException;
-import io.codero.filestore.exception.ExceptionMessage;
-import io.codero.filestore.exception.FileAlreadyExistException;
-import io.codero.filestore.service.FileService;
+import io.codero.fileservice.exception.CustomIOException;
+import io.codero.fileservice.exception.ExceptionMessage;
+import io.codero.fileservice.exception.FileAlreadyExistException;
+import io.codero.fileservice.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +37,7 @@ public class FileServiceImpl implements FileService {
                 log.info("File: {} was to save to disk", localName);
             }
         } catch (IOException ioException) {
-            throw new CastIOException(ExceptionMessage.IOEXCEPTION.get());
+            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
         }
     }
 
@@ -46,7 +46,7 @@ public class FileServiceImpl implements FileService {
         try {
             return new InputStreamResource(new FileInputStream(fileDir + "/" + fileName));
         } catch (IOException ioException) {
-            throw new CastIOException(ExceptionMessage.IOEXCEPTION.get());
+            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
         }
     }
 
@@ -62,7 +62,7 @@ public class FileServiceImpl implements FileService {
                 log.info("File: {} was replaced to new file", localName);
             }
         } catch (IOException ioException) {
-            throw new CastIOException(ExceptionMessage.IOEXCEPTION.get());
+            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
         }
     }
 
@@ -71,7 +71,7 @@ public class FileServiceImpl implements FileService {
         try {
             Files.deleteIfExists(Path.of(fileDir, fileName));
         } catch (IOException ioException) {
-            throw new CastIOException(ExceptionMessage.IOEXCEPTION.get());
+            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
         }
         log.info("File: {} was deleted from disk", fileName);
     }
