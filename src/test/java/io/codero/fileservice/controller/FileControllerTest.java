@@ -1,4 +1,4 @@
-package io.codero.filestore.controller;
+package io.codero.fileservice.controller;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

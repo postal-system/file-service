@@ -1,4 +1,4 @@
-package io.codero.filestore.entity;
+package io.codero.fileservice.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

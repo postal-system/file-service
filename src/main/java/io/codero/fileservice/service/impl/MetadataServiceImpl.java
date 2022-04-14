@@ -1,9 +1,10 @@
-package io.codero.filestore.service.impl;
+package io.codero.fileservice.service.impl;
 
-import io.codero.filestore.entity.Metadata;
-import io.codero.filestore.exception.FileNotFoundException;
-import io.codero.filestore.repository.MetadataRepository;
-import io.codero.filestore.service.MetadataService;
+import io.codero.fileservice.entity.Metadata;
+import io.codero.fileservice.exception.ExceptionMessage;
+import io.codero.fileservice.exception.FileNotFoundException;
+import io.codero.fileservice.repository.MetadataRepository;
+import io.codero.fileservice.service.MetadataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,17 +25,17 @@ public class MetadataServiceImpl implements MetadataService {
     @Override
     public String getNameById(UUID uuid) {
         return repository.findById(uuid)
-                .orElseThrow(() -> new FileNotFoundException(""))
+                .orElseThrow(() -> new FileNotFoundException(ExceptionMessage.FILE_NOT_FOUND_EXCEPTION.get()))
                 .getFileName();
     }
 
     @Override
     public void update(Metadata metaData) {
-
+        // TODO: make implementation
     }
 
     @Override
     public void deleteByID(UUID uuid) {
-
+        // TODO: make implementation
     }
 }

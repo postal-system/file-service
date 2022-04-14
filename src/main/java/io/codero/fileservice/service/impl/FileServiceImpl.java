@@ -1,8 +1,9 @@
-package io.codero.filestore.service.impl;
+package io.codero.fileservice.service.impl;
 
-import io.codero.filestore.exception.CastIOException;
-import io.codero.filestore.exception.FileAlreadyExistException;
-import io.codero.filestore.service.FileService;
+import io.codero.fileservice.exception.CustomIOException;
+import io.codero.fileservice.exception.ExceptionMessage;
+import io.codero.fileservice.exception.FileAlreadyExistException;
+import io.codero.fileservice.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +37,7 @@ public class FileServiceImpl implements FileService {
                 log.info("File: {} was to save to disk", localName);
             }
         } catch (IOException ioException) {
-            generateMessage(ioException);
+            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
         }
     }
 
@@ -45,9 +46,8 @@ public class FileServiceImpl implements FileService {
         try {
             return new InputStreamResource(new FileInputStream(fileDir + "/" + fileName));
         } catch (IOException ioException) {
-            generateMessage(ioException);
+            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
         }
-        return null;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class FileServiceImpl implements FileService {
                 log.info("File: {} was replaced to new file", localName);
             }
         } catch (IOException ioException) {
-            generateMessage(ioException);
+            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
         }
     }
 
@@ -71,21 +71,14 @@ public class FileServiceImpl implements FileService {
         try {
             Files.deleteIfExists(Path.of(fileDir, fileName));
         } catch (IOException ioException) {
-            generateMessage(ioException);
+            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
         }
         log.info("File: {} was deleted from disk", fileName);
     }
 
     private void isFileExist(String fileName) {
         if (Files.exists(Path.of(fileDir, fileName))) {
-            String message = String.format("The file with name: \"%s\" already exists", fileName);
-            log.warn(message);
-            throw new FileAlreadyExistException(message);
+            throw new FileAlreadyExistException(String.format(ExceptionMessage.FILE_IS_EXIST.get(), fileName));
         }
-    }
-
-    private void generateMessage(IOException ioException) {
-        log.warn("{It was throw IOException, File cannot be deleted}", ioException);
-        throw new CastIOException("It was throw IOException, file cannot be deleted");
     }
 }
