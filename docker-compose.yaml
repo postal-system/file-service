@@ -3,7 +3,7 @@ version: "3.8"
 services:
   postgresql:
     restart: always
-    image: postgres
+    image: postgres:latest
     container_name: files_db
     environment:
       - POSTGRES_USER=postgres
@@ -11,11 +11,3 @@ services:
       - POSTGRES_DB=files
     ports:
       - "5436:5432"
-
-  file_service_app:
-    image: 'application:latest'
-    build:
-      context: .
-    container_name: file_service_app
-    ports:
-      - 8085:8085

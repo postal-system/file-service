@@ -3,11 +3,9 @@ package io.codero.fileservice.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Data
@@ -15,11 +13,15 @@ import java.util.UUID;
 @Table(name = "file")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Metadata {
+public class FileEntity {
     @Id
-    @Column(name = "id", nullable = false)
+    @GeneratedValue
     private UUID id;
 
     @Column(name = "file_name", nullable = false)
     private String fileName;
+
+    @Lob
+    @Type(type="org.hibernate.type.BinaryType")
+    private byte[] content;
 }
