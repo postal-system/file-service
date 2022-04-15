@@ -18,6 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/api/files")
 public class FileController {
+    // TODO: 15.04.2022 обработать исключения
     private final FileService service;
 
     @PostMapping
@@ -26,13 +27,17 @@ public class FileController {
     }
 
     @GetMapping(value = "{id}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    ResponseEntity<Resource> downloadImage(@PathVariable UUID id) throws IOException {
+    ResponseEntity<Resource> download(@PathVariable UUID id) throws IOException {
         FileEntity file = service.findById(id);
-        byte[] image = file.getContent();
+        byte[] data = file.getContent();
         String filename = file.getFileName();
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=%s", filename));
+        return ResponseEntity.ok().headers(headers).body(new ByteArrayResource(data));
+    }
 
-        return ResponseEntity.ok().headers(headers).body(new ByteArrayResource(image));
+    @DeleteMapping(value = "{id}")
+    void delete(@PathVariable UUID id) throws IOException {
+        service.delete(id);
     }
 }

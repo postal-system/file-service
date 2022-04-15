@@ -8,6 +8,6 @@ import java.util.UUID;
 
 public interface FileService {
     UUID save(MultipartFile file) throws IOException;
-
     FileEntity findById(UUID uuid) throws IOException;
+    void delete(UUID uuid) throws IOException;
 }

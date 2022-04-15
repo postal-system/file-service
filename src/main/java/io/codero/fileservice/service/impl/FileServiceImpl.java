@@ -21,10 +21,8 @@ public class FileServiceImpl implements FileService {
 
     public UUID save(MultipartFile multipartFile) throws IOException {
         FileEntity file = new FileEntity();
-
         file.setFileName(multipartFile.getOriginalFilename());
         file.setContent(multipartFile.getBytes());
-
         return fileRepository.save(file).getId();
     }
 
@@ -32,5 +30,10 @@ public class FileServiceImpl implements FileService {
     public FileEntity findById(UUID uuid) {
         return fileRepository.findById(uuid)
                 .orElseThrow(() -> new FileNotFoundException(ExceptionMessage.FILE_NOT_FOUND_EXCEPTION.get()));
+    }
+
+    @Override
+    public void delete(UUID uuid) throws IOException {
+        fileRepository.deleteById(uuid);
     }
 }
