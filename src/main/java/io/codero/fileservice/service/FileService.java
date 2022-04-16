@@ -1,14 +1,15 @@
 package io.codero.fileservice.service;
 
-import org.springframework.core.io.Resource;
+import io.codero.fileservice.entity.FileEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.UUID;
+
 public interface FileService {
-    void add(MultipartFile multipartFile);
+    UUID save(MultipartFile file) throws IOException;
 
-    Resource getByFileName(String fileName);
+    FileEntity findById(UUID uuid) throws IOException;
 
-    void update(MultipartFile multipartFile, String oldName);
-
-    void deleteByFileName(String fileName);
+    void delete(UUID uuid) throws IOException;
 }
