@@ -1,6 +1,7 @@
 package io.codero.fileservice.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Table(name = "file")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class FileEntity {
     @Id
     @GeneratedValue
@@ -28,6 +30,12 @@ public class FileEntity {
     private String fileName;
 
     @Lob
-    @Type(type="org.hibernate.type.BinaryType")
+    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] content;
+
+    @Column(name = "creation_timestamp", nullable = false)
+    private LocalDateTime creationTimestamp;
+
+    @Column(name = "update_timestamp", nullable = false)
+    private LocalDateTime updateTimestamp;
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Slf4j
@@ -20,9 +21,12 @@ public class FileServiceImpl implements FileService {
     private final FileRepository fileRepository;
 
     public UUID save(MultipartFile multipartFile) throws IOException {
-        FileEntity file = new FileEntity();
-        file.setFileName(multipartFile.getOriginalFilename());
-        file.setContent(multipartFile.getBytes());
+        FileEntity file = FileEntity.builder()
+                .fileName(multipartFile.getOriginalFilename())
+                .content(multipartFile.getBytes())
+                .creationTimestamp(LocalDateTime.now())
+                .updateTimestamp(LocalDateTime.now())
+                .build();
         return fileRepository.save(file).getId();
     }
 
@@ -33,7 +37,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void delete(UUID uuid) throws IOException {
+    public void delete(UUID uuid) {
         fileRepository.deleteById(uuid);
     }
 }
