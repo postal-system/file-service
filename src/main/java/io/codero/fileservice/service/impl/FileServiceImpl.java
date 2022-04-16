@@ -20,7 +20,7 @@ import java.util.UUID;
 public class FileServiceImpl implements FileService {
     private final FileRepository fileRepository;
 
-    public UUID save(MultipartFile multipartFile) throws IOException {
+    public synchronized UUID save(MultipartFile multipartFile) throws IOException {
         FileEntity file = FileEntity.builder()
                 .fileName(multipartFile.getOriginalFilename())
                 .content(multipartFile.getBytes())
