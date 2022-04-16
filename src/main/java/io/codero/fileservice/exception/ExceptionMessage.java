@@ -4,13 +4,13 @@ public enum ExceptionMessage {
     IOEXCEPTION("It was throw IOException, file cannot be deleted"),
     FILE_NOT_FOUND_EXCEPTION("This file cannot be found"),
     FILE_IS_EXIST("The file with name: %s already exists");
-    private final String Message;
+    private final String message;
 
     public String get() {
-        return Message;
+        return message;
     }
 
-    private ExceptionMessage(String Message) {
-        this.Message = Message;
+    private ExceptionMessage(String message) {
+        this.message = message;
     }
 }
