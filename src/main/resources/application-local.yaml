@@ -10,8 +10,6 @@ spring:
       max-file-size: 1280KB
       max-request-size: 1280KB
       enabled: true
-app:
-  document-root: src/main/resources/temp
 server:
   port: 8085
 interceptor:

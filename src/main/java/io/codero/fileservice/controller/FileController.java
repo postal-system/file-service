@@ -43,8 +43,8 @@ public class FileController {
         return ResponseEntity.ok().headers(headers).body(new ByteArrayResource(data));
     }
 
-    @DeleteMapping(value = "{id}")
-    void delete(@PathVariable UUID id) throws IOException {
+    @DeleteMapping("/{id}")
+    void delete(@PathVariable("id") UUID id) {
         service.delete(id);
     }
 }
