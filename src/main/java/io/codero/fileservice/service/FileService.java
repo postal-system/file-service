@@ -11,5 +11,5 @@ public interface FileService {
 
     FileEntity findById(UUID uuid) throws IOException;
 
-    void delete(UUID uuid) throws IOException;
+    void delete(UUID uuid) ;
 }
