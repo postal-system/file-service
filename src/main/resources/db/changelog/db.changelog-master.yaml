@@ -1,7 +1,7 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/create_table_file_storage.sql
+      file: db/changelog/v_1.0.0/create_table_file_storage.sql
   - include:
-      file: db/changelog/v1_update_table_file.sql
+      file: db/changelog/v_1.0.1/added_content_to_file.sql
   - include:
-      file: db/changelog/v2_update_table_file.sql
+      file: db/changelog/v_1.0.2/added_timestamps_to_file.sql
