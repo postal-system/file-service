@@ -1,84 +1,46 @@
 package io.codero.fileservice.service.impl;
 
-import io.codero.fileservice.exception.CustomIOException;
-import io.codero.fileservice.exception.ExceptionMessage;
-import io.codero.fileservice.exception.FileAlreadyExistException;
+import io.codero.fileservice.entity.FileEntity;
+
+import io.codero.fileservice.exception.NotFoundException;
+import io.codero.fileservice.repository.FileRepository;
 import io.codero.fileservice.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
-    @Value("${app.document-root}")
-    private String fileDir;
+    private final FileRepository fileRepository;
 
-    @Override
-    public void add(MultipartFile multipartFile) {
-        isFileExist(multipartFile.getOriginalFilename());
-        String localName = fileDir + "/" + multipartFile.getOriginalFilename();
-        try {
-            Files.createDirectories(Paths.get(fileDir));
-            try (FileOutputStream fos = new FileOutputStream(localName)) {
-                fos.write(multipartFile.getBytes());
-                log.info("File: {} was to save to disk", localName);
-            }
-        } catch (IOException ioException) {
-            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
-        }
+    public synchronized UUID save(MultipartFile multipartFile) throws IOException {
+        FileEntity file = FileEntity.builder()
+                .fileName(multipartFile.getOriginalFilename())
+                .content(multipartFile.getBytes())
+                .creationTimestamp(LocalDateTime.now())
+                .updateTimestamp(LocalDateTime.now())
+                .build();
+        return fileRepository.save(file).getId();
     }
 
     @Override
-    public Resource getByFileName(String fileName) {
-        try {
-            return new InputStreamResource(new FileInputStream(fileDir + "/" + fileName));
-        } catch (IOException ioException) {
-            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
-        }
+    public FileEntity findById(UUID uuid) {
+        return fileRepository.findById(uuid)
+                .orElseThrow(() -> new NotFoundException(String.format("File wit id = %s cannot be found", uuid)));
     }
 
+    @Transactional(rollbackFor = {NotFoundException.class})
     @Override
-    public void update(MultipartFile file, String oldName) {
-        String newName = file.getOriginalFilename();
-        try {
-            Files.deleteIfExists(Path.of(fileDir, oldName));
-            log.info("Old File: {} was deleted", oldName);
-            String localName = fileDir + "/" + newName;
-            try (FileOutputStream fos = new FileOutputStream(localName)) {
-                fos.write(file.getBytes());
-                log.info("File: {} was replaced to new file", localName);
-            }
-        } catch (IOException ioException) {
-            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
-        }
-    }
-
-    @Override
-    public void deleteByFileName(String fileName) {
-        try {
-            Files.deleteIfExists(Path.of(fileDir, fileName));
-        } catch (IOException ioException) {
-            throw new CustomIOException(ExceptionMessage.IOEXCEPTION.get());
-        }
-        log.info("File: {} was deleted from disk", fileName);
-    }
-
-    private void isFileExist(String fileName) {
-        if (Files.exists(Path.of(fileDir, fileName))) {
-            throw new FileAlreadyExistException(String.format(ExceptionMessage.FILE_IS_EXIST.get(), fileName));
-        }
+    public void delete(UUID uuid) throws NotFoundException {
+        findById(uuid);
+        fileRepository.deleteById(uuid);
     }
 }
