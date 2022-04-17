@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
+@TestPropertySource(properties = "spring.autoconfigure.exclude=io.codero.interceptor.context.WebContextAutoConfiguration")
 class FileControllerTest extends AbstractControllerTest {
 
     private static final String URL = "/api/files";
@@ -31,13 +33,6 @@ class FileControllerTest extends AbstractControllerTest {
             "file1.txt",
             MediaType.TEXT_PLAIN_VALUE,
             "Hello, World!".getBytes()
-    );
-
-    private final MockMultipartFile file2 = new MockMultipartFile(
-            "file",
-            "file2.txt",
-            MediaType.TEXT_PLAIN_VALUE,
-            "Welcome!".getBytes()
     );
 
     @Test
